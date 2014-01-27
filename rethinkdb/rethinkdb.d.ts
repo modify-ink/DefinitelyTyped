@@ -151,15 +151,15 @@ declare module "rethinkdb" {
   }
 
   interface InsertOptions {
-    upsert: boolean; // true
-    durability: string; // 'soft'
-    return_vals: boolean; // false
+    upsert?: boolean; // true
+    durability?: string; // 'soft'
+    returnVals?: boolean; // false
   }
 
   interface UpdateOptions {
-    non_atomic: boolean;
-    durability: string; // 'soft'
-    return_vals: boolean; // false    
+    nonAtomic?: boolean;
+    durability?: string; // 'soft'
+    returnVals?: boolean; // false    
   }
 
   interface WriteResult {
@@ -171,6 +171,8 @@ declare module "rethinkdb" {
     skipped: number;
     first_error: Error;
     generated_keys: string[]; // only for insert
+    new_val: any;
+    old_val: any;
   }
 
   interface JoinResult {
@@ -192,10 +194,10 @@ declare module "rethinkdb" {
     right_bound?: string; // 'open'
   }
 
-  interface Expression<T> extends Writeable, Operation<T> {
+  interface Expression<T> extends Writeable, Operation<T>  {
       (prop:string):Expression<any>; 
       merge(query:Expression<Object>):Expression<Object>;
-      append(prop:string):Expression<Object>;
+      append(value:Object):Expression<Object>;
       contains(prop:string):Expression<boolean>;
 
       and(b:boolean):Expression<boolean>;
@@ -218,6 +220,19 @@ declare module "rethinkdb" {
       hasFields(...fields:string[]):Expression<boolean>;
 
       default(value:T):Expression<T>;
+      keys():Array<string>;
+
+      append<U>(value:U):Expression<U[]>;
+      prepend<U>(value:U):Expression<U[]>;
+      difference<U>(array:Expression<U[]>):Expression<U[]>;
+      setInsert<U>(value:U):Expression<U[]>;
+      setUnion<U>(array:Expression<U[]>):Expression<U[]>;
+      setIntersection<U>(array:Expression<U[]>):Expression<U[]>;
+      setDifference<U>(array:Expression<U[]>):Expression<U[]>;
+      insertAt<U>(index:number, value:U):Expression<U[]>;
+      spliceAt<U>(index:number, array:Expression<U[]>):Expression<U[]>;
+      deleteAt<U>(index:number, endIndex?:number):Expression<U[]>;
+      changeAt<U>(index:number, value:U):Expression<U[]>;
   }
 
   interface Operation<T> {
