@@ -90,8 +90,8 @@ declare module "rethinkdb" {
     insert(obj:any, options?:InsertOptions):Operation<WriteResult>;
 
     get(key:string):Sequence; // primary key
-    getAll(key:string, index?:Index):Sequence; // without index defaults to primary key
-    getAll(...keys:string[]):Sequence;
+    getAll(key:any, index?:Index):Sequence; // without index defaults to primary key
+    getAll(...keys:any[]):Sequence;
   }
 
   interface Sequence extends Operation<Cursor>, Writeable {
