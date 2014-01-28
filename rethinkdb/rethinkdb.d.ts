@@ -90,6 +90,7 @@ declare module "rethinkdb" {
     insert(obj:any, options?:InsertOptions):Operation<WriteResult>;
 
     get(key:string):Sequence; // primary key
+    get(key:Expression<string>):Sequence;
     getAll(key:any, index?:Index):Sequence; // without index defaults to primary key
     getAll(...keys:any[]):Sequence;
   }
@@ -134,8 +135,12 @@ declare module "rethinkdb" {
     contains(prop:string):Expression<boolean>;
 
     // Manipulation
-    pluck(...props:string[]):Sequence;
-    without(...props:string[]):Sequence;
+    pluck(...props:any[]):Sequence;
+    without(...props:any[]):Sequence;
+
+    // Control Structures
+    forEach(query:Operation<WriteResult>):Operation<WriteResult>;
+    forEach(f:(doc:Expression<any>)=>Operation<WriteResult>):Operation<WriteResult>;
   }
 
   interface ExpressionFunction<U> {
