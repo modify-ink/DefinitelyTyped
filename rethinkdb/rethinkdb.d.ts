@@ -89,19 +89,62 @@ declare module "rethinkdb" {
     insert(obj:any[], options?:InsertOptions):Operation<WriteResult>;
     insert(obj:any, options?:InsertOptions):Operation<WriteResult>;
 
-    get(key:string):Sequence; // primary key
-    get(key:Expression<string>):Sequence;
+    get(key:string):Expression<any>; // primary key
+    get(key:Expression<string>):Expression<any>;
     getAll(key:any, index?:Index):Sequence; // without index defaults to primary key
     getAll(...keys:any[]):Sequence;
   }
 
-  interface Sequence extends Operation<Cursor>, Writeable {
+  interface Expression<T> extends Writeable, Operation<T>  {
+    (prop:string):Expression<any>; 
+    merge(query:Expression<Object>):Expression<Object>;
+    contains(prop:string):Expression<boolean>;
 
+    and(b:boolean):Expression<boolean>;
+    or(b:boolean):Expression<boolean>;
+    eq(v:any):Expression<boolean>;
+    ne(v:any):Expression<boolean>;
+    not():Expression<boolean>;
+
+    gt(value:T):Expression<boolean>;
+    ge(value:T):Expression<boolean>;
+    lt(value:T):Expression<boolean>;
+    le(value:T):Expression<boolean>;
+
+    add(n:number):Expression<number>;
+    sub(n:number):Expression<number>;
+    mul(n:number):Expression<number>;
+    div(n:number):Expression<number>;
+    mod(n:number):Expression<number>;
+
+    hasFields(...fields:string[]):Expression<boolean>;
+
+    default(value:T):Expression<T>;
+    keys():Array<string>;
+
+    // if it is an expression for an array
+    append<U>(value:U):Expression<U[]>;
+    prepend<U>(value:U):Expression<U[]>;
+    difference<U>(array:Expression<U[]>):Expression<U[]>;
+    setInsert<U>(value:U):Expression<U[]>;
+    setUnion<U>(array:Expression<U[]>):Expression<U[]>;
+    setIntersection<U>(array:Expression<U[]>):Expression<U[]>;
+    setDifference<U>(array:Expression<U[]>):Expression<U[]>;
+    insertAt<U>(index:number, value:U):Expression<U[]>;
+    spliceAt<U>(index:number, array:Expression<U[]>):Expression<U[]>;
+    deleteAt<U>(index:number, endIndex?:number):Expression<U[]>;
+    changeAt<U>(index:number, value:U):Expression<U[]>;
+
+    // Manipulation
+    pluck(...props:any[]):Sequence;
+    without(...props:any[]):Sequence;
+  }
+
+  interface Sequence extends Expression<any> {
     between(lower:any, upper:any, index?:Index):Sequence;
     filter(rql:ExpressionFunction<boolean>):Sequence;
     filter(rql:Expression<boolean>):Sequence;
     filter(obj:{[key:string]:any}):Sequence;
-
 
     // Join
     // these return left, right
@@ -132,11 +175,6 @@ declare module "rethinkdb" {
     distinct():Sequence;
     groupedMapReduce(group:ExpressionFunction<any>, map:ExpressionFunction<any>, reduce:ReduceFunction<any>, base?:any):Sequence;
     groupBy(...aggregators:Aggregator[]):Expression<Object>; // TODO: reduction object
-    contains(prop:string):Expression<boolean>;
-
-    // Manipulation
-    pluck(...props:any[]):Sequence;
-    without(...props:any[]):Sequence;
 
     // Control Structures
     forEach(query:Operation<WriteResult>):Operation<WriteResult>;
@@ -199,46 +237,7 @@ declare module "rethinkdb" {
     right_bound?: string; // 'open'
   }
 
-  interface Expression<T> extends Writeable, Operation<T>  {
-      (prop:string):Expression<any>; 
-      merge(query:Expression<Object>):Expression<Object>;
-      append(value:Object):Expression<Object>;
-      contains(prop:string):Expression<boolean>;
 
-      and(b:boolean):Expression<boolean>;
-      or(b:boolean):Expression<boolean>;
-      eq(v:any):Expression<boolean>;
-      ne(v:any):Expression<boolean>;
-      not():Expression<boolean>;
-
-      gt(value:T):Expression<boolean>;
-      ge(value:T):Expression<boolean>;
-      lt(value:T):Expression<boolean>;
-      le(value:T):Expression<boolean>;
-
-      add(n:number):Expression<number>;
-      sub(n:number):Expression<number>;
-      mul(n:number):Expression<number>;
-      div(n:number):Expression<number>;
-      mod(n:number):Expression<number>;
-
-      hasFields(...fields:string[]):Expression<boolean>;
-
-      default(value:T):Expression<T>;
-      keys():Array<string>;
-
-      append<U>(value:U):Expression<U[]>;
-      prepend<U>(value:U):Expression<U[]>;
-      difference<U>(array:Expression<U[]>):Expression<U[]>;
-      setInsert<U>(value:U):Expression<U[]>;
-      setUnion<U>(array:Expression<U[]>):Expression<U[]>;
-      setIntersection<U>(array:Expression<U[]>):Expression<U[]>;
-      setDifference<U>(array:Expression<U[]>):Expression<U[]>;
-      insertAt<U>(index:number, value:U):Expression<U[]>;
-      spliceAt<U>(index:number, array:Expression<U[]>):Expression<U[]>;
-      deleteAt<U>(index:number, endIndex?:number):Expression<U[]>;
-      changeAt<U>(index:number, value:U):Expression<U[]>;
-  }
 
   interface Operation<T> {
    run(conn:Connection, cb:(err:Error, result:T)=>void); 
