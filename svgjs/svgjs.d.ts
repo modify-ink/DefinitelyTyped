@@ -19,7 +19,8 @@ declare module svgjs {
         (selector:string):Doc;
         (domElement:HTMLElement):Doc;
         create(name:string):any;
-        Element:ElementStatic;
+        Element:ElementClass;
+        Parent:ParentClass;
         supported:boolean;
         get(id:string):Element;
         extend(parent:Object, obj:Object):void;
@@ -170,8 +171,12 @@ declare module svgjs {
         track:Element;
     }
 
-    export interface ElementStatic extends Parent {
+    export interface ElementClass extends Element {
         new(node:any):Element;
+    }
+
+    export interface ParentClass extends Parent {
+        new(node:any):Parent;
     }
 
     export interface Defs extends Element {}
