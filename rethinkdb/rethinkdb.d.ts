@@ -27,6 +27,9 @@ declare module "rethinkdb" {
   export function expr(stuff:any):Expression<any>;
 
   export function now():Time;
+  export function time(year:number, month:number, day:number, hour?:number, minute?:number, second?:number, timezone?:string):Time;
+  export function epochTime(time:number):Time;
+  export function ISO8601(date:string):Time;
 
   // Control Structures
   export function branch(test:Expression<boolean>, trueBranch:Expression<any>, falseBranch:Expression<any>):Expression<any>;
@@ -246,7 +249,23 @@ declare module "rethinkdb" {
   interface Aggregator {}
   interface Sort {}
 
-  interface Time {}
+  interface Time {
+    inTimezone(zone:string):Time;
+    timezone():string;
+    during(start:Time, end:Time, options?:any):boolean;
+    date():Time;
+    timeOfDay():number;
+    year():number;
+    month():number;
+    day():number;
+    dayOfWeek():number;
+    dayOfYear():number;
+    hours():number;
+    minutes():number;
+    seconds():number;
+    toISO8601():string;
+    toEpochTime():number;
+  }
 
 
   // http://www.rethinkdb.com/api/#js
