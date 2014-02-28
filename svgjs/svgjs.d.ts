@@ -117,8 +117,8 @@ declare module svgjs {
         data(name:string):any;
         data(name:string, value:any):Element;
         remember(name:string, value:any):Element;
-        remember(obj:Object):Element;
         remember(name:string):any;
+        remember(obj:Object):Element;
         forget(...keys:string[]):Element;
 
         fill(fill:{color?:string; opacity?:number}):Element;
