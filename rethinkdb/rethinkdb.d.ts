@@ -102,6 +102,7 @@ declare module "rethinkdb" {
     (prop:string):Expression<any>; 
     merge(query:Expression<Object>):Expression<Object>;
     contains(prop:string):Expression<boolean>;
+    contains(prop:ExpressionFunction<boolean>):Expression<boolean>;
 
     and(b:boolean):Expression<boolean>;
     or(b:boolean):Expression<boolean>;
