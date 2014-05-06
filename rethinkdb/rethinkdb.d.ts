@@ -26,10 +26,10 @@ declare module "rethinkdb" {
   export function row(name:string):Expression<any>;
   export function expr(stuff:any):Expression<any>;
 
-  export function now():Time;
-  export function time(year:number, month:number, day:number, hour?:number, minute?:number, second?:number, timezone?:string):Time;
-  export function epochTime(time:number):Time;
-  export function ISO8601(date:string):Time;
+  export function now():Expression<Date>;
+  export function time(year:number, month:number, day:number, hour?:number, minute?:number, second?:number, timezone?:string):Expression<Date>;
+  export function epochTime(time:number):Expression<Date>;
+  export function ISO8601(date:string):Expression<Date>;
 
   // Control Structures
   export function branch(test:Expression<boolean>, trueBranch:Expression<any>, falseBranch:Expression<any>):Expression<any>;
@@ -142,6 +142,22 @@ declare module "rethinkdb" {
     // Manipulation
     pluck(...props:any[]):Sequence;
     without(...props:any[]):Sequence;
+
+    inTimezone(zone:string):Expression<Date>;
+    timezone():Expression<string>;
+    during(start:Expression<Date>, end:Expression<Date>, options?:any):Expression<boolean>;
+    date():Expression<Date>;
+    timeOfDay():Expression<number>;
+    year():Expression<number>;
+    month():Expression<number>;
+    day():Expression<number>;
+    dayOfWeek():Expression<number>;
+    dayOfYear():Expression<number>;
+    hours():Expression<number>;
+    minutes():Expression<number>;
+    seconds():Expression<number>;
+    toISO8601():Expression<string>;
+    toEpochTime():Expression<number>;
   }
 
   interface Sequence extends Expression<any> {
@@ -249,25 +265,6 @@ declare module "rethinkdb" {
 
   interface Aggregator {}
   interface Sort {}
-
-  interface Time {
-    inTimezone(zone:string):Time;
-    timezone():string;
-    during(start:Time, end:Time, options?:any):boolean;
-    date():Time;
-    timeOfDay():number;
-    year():number;
-    month():number;
-    day():number;
-    dayOfWeek():number;
-    dayOfYear():number;
-    hours():number;
-    minutes():number;
-    seconds():number;
-    toISO8601():string;
-    toEpochTime():number;
-  }
-
 
   // http://www.rethinkdb.com/api/#js
   // TODO control structures
