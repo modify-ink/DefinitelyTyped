@@ -811,7 +811,7 @@ declare module D3 {
 
     export interface EnterSelection {
         append: (name: string) => Selection;
-        insert: (name: string, before: string) => Selection;
+        insert: (name: string, before?: string) => Selection;
         select: (selector: string) => Selection;
         empty: () => boolean;
         node: () => Element;
@@ -1463,7 +1463,7 @@ declare module D3 {
             /**
             * decrease lightness by some exponential factor (gamma)
             */
-            darker(k: number): Color;
+            darker(k?: number): Color;
             /**
             * convert the color to a string.
             */

@@ -200,6 +200,7 @@ interface NodeBuffer {
     [index: number]: number;
     write(string: string, offset?: number, length?: number, encoding?: string): number;
     toString(encoding?: string, start?: number, end?: number): string;
+    toJSON(): any;
     length: number;
     copy(targetBuffer: Buffer, targetStart?: number, sourceStart?: number, sourceEnd?: number): number;
     slice(start?: number, end?: number): Buffer;
@@ -239,6 +240,10 @@ interface NodeBuffer {
 *                   MODULES                     *
 *                                               *
 ************************************************/
+declare module "buffer" {
+    export var INSPECT_MAX_BYTES: number;
+}
+
 declare module "querystring" {
     export function stringify(obj: any, sep?: string, eq?: string): string;
     export function parse(str: string, sep?: string, eq?: string, options?: { maxKeys?: number; }): any;
@@ -322,7 +327,7 @@ declare module "http" {
         write(chunk: any, encoding?: string): void;
         abort(): void;
         setTimeout(timeout: number, callback?: Function): void;
-        setNoDelay(noDelay?: Function): void;
+        setNoDelay(noDelay?: boolean): void;
         setSocketKeepAlive(enable?: boolean, initialDelay?: number): void;
 
         // Extended base methods
@@ -343,7 +348,10 @@ declare module "http" {
     }
     export interface Agent { maxSockets: number; sockets: any; requests: any; }
 
-    export var STATUS_CODES: any;
+    export var STATUS_CODES: {
+        [errorCode: number]: string;
+        [errorCode: string]: string;
+    };
     export function createServer(requestListener?: (request: ServerRequest, response: ServerResponse) =>void ): Server;
     export function createClient(port?: number, host?: string): any;
     export function request(options: any, callback?: Function): ClientRequest;
