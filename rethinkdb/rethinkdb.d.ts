@@ -1,4 +1,4 @@
-// Type definitions for Rethinkdb 1.10.0
+// Type definitions for Rethinkdb 1.12
 // Project: http://rethinkdb.com/
 // Definitions by: Sean Hess <https://seanhess.github.io/>
 // Definitions: https://github.com/borisyankov/DefinitelyTyped
@@ -41,7 +41,7 @@ declare module "rethinkdb" {
     each(cb:(err:Error, row:any)=>boolean, done?:()=>void); // returning false stops iteration
     next(cb:(err:Error, row:any) => void);
     toArray(cb:(err:Error, rows:any[]) => void);
-    close();
+    close():void;
   }
 
   interface ConnectionOptions {
@@ -52,7 +52,7 @@ declare module "rethinkdb" {
   }
 
   interface Connection {
-    close();
+    close():void;
     reconnect(cb:(err:Error, conn:Connection)=>void);
     use(dbName:string);
     addListener(event:string, cb:Function);
@@ -105,7 +105,9 @@ declare module "rethinkdb" {
     contains(prop:ExpressionFunction<boolean>):Expression<boolean>;
 
     and(b:boolean):Expression<boolean>;
+    and(b:Expression<boolean>):Expression<boolean>;
     or(b:boolean):Expression<boolean>;
+    or(b:Expression<boolean>):Expression<boolean>;
     eq(v:any):Expression<boolean>;
     ne(v:any):Expression<boolean>;
     not():Expression<boolean>;
@@ -190,11 +192,11 @@ declare module "rethinkdb" {
     sample(n:number):Sequence;
 
     // Aggregate
-    reduce(r:ReduceFunction<any>, base?:any):Expression<any>;
+    reduce(r:ReduceFunction<any>, base?:any):Sequence;
     count():Expression<number>;
     distinct():Sequence;
-    groupedMapReduce(group:ExpressionFunction<any>, map:ExpressionFunction<any>, reduce:ReduceFunction<any>, base?:any):Sequence;
-    groupBy(...aggregators:Aggregator[]):Expression<Object>; // TODO: reduction object
+    group(group:ExpressionFunction<any>):Sequence;
+    ungroup():Sequence;
 
     // Control Structures
     forEach(query:Operation<WriteResult>):Operation<WriteResult>;
