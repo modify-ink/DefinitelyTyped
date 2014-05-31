@@ -197,6 +197,7 @@ declare module "rethinkdb" {
     distinct():Sequence;
     group(group:ExpressionFunction<any>):Sequence;
     ungroup():Sequence;
+    sum(prop:string):Expression<number>
 
     // Control Structures
     forEach(query:Operation<WriteResult>):Operation<WriteResult>;
