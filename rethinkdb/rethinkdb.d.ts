@@ -167,6 +167,8 @@ declare module "rethinkdb" {
     filter(rql:ExpressionFunction<boolean>):Sequence;
     filter(rql:Expression<boolean>):Sequence;
     filter(obj:{[key:string]:any}):Sequence;
+    max(rql:ExpressionFunction<any>):Sequence;
+    max(attr:string):Sequence;
 
     // Join
     // these return left, right
