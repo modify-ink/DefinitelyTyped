@@ -238,6 +238,8 @@ declare module "express" {
             views: any;
 
             count: number;
+
+            passport: any;
         }
 
         interface Request extends http.ServerRequest, Express.Request {
