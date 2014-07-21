@@ -196,12 +196,13 @@ declare module "rethinkdb" {
 
     // Aggregate
     reduce(r:ReduceFunction<any>, base?:any):Sequence;
-    count(value:boolean):Expression<number>
+    count(value:any):Expression<number>;
+    count(rql:ExpressionFunction<boolean>):Expression<number>;
     count():Expression<number>;
     distinct():Sequence;
     group(group:ExpressionFunction<any>):Sequence;
     ungroup():Sequence;
-    sum(prop:string):Expression<number>
+    sum(prop:string):Expression<number>;
 
     // Control Structures
     forEach(query:Operation<WriteResult>):Operation<WriteResult>;
