@@ -163,6 +163,7 @@ declare module "rethinkdb" {
   }
 
   interface Sequence extends Expression<any> {
+    (prop:string):Sequence;
     between(lower:any, upper:any, index?:Index):Sequence;
     filter(rql:ExpressionFunction<boolean>):Sequence;
     filter(rql:Expression<boolean>):Sequence;
@@ -195,6 +196,7 @@ declare module "rethinkdb" {
 
     // Aggregate
     reduce(r:ReduceFunction<any>, base?:any):Sequence;
+    count(value:boolean):Expression<number>
     count():Expression<number>;
     distinct():Sequence;
     group(group:ExpressionFunction<any>):Sequence;
