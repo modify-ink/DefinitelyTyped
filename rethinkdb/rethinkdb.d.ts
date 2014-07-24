@@ -101,6 +101,7 @@ declare module "rethinkdb" {
   interface Expression<T> extends Writeable, Operation<T>  {
     (prop:string):Expression<any>; 
     merge(query:Expression<Object>):Expression<Object>;
+    match(str:string):Expression<Object>
     contains(prop:string):Expression<boolean>;
     contains(prop:ExpressionFunction<boolean>):Expression<boolean>;
 
