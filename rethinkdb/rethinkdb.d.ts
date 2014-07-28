@@ -100,8 +100,7 @@ declare module "rethinkdb" {
 
   interface Expression<T> extends Writeable, Operation<T>  {
     (prop:string):Expression<any>; 
-    merge(query:Expression<Object>):Expression<Object>;
-    match(str:string):Expression<Object>
+    match(str:string):Expression<Object>;
     contains(prop:string):Expression<boolean>;
     contains(prop:ExpressionFunction<boolean>):Expression<boolean>;
 
@@ -166,6 +165,8 @@ declare module "rethinkdb" {
   interface Sequence extends Expression<any> {
     (prop:string):Sequence;
     between(lower:any, upper:any, index?:Index):Sequence;
+    merge(rql:MergeFunction):Sequence;
+    merge(query:Expression<Object>):Sequence;
     filter(rql:ExpressionFunction<boolean>):Sequence;
     filter(rql:Expression<boolean>):Sequence;
     filter(obj:{[key:string]:any}):Sequence;
@@ -222,6 +223,10 @@ declare module "rethinkdb" {
     (acc:Expression<any>, val:Expression<any>):Expression<U>;
   }
 
+  interface MergeFunction {
+    (doc:Expression<any>):MergeResult
+  }
+
   interface InsertOptions {
     upsert?: boolean; // true
     durability?: string; // 'soft'
@@ -250,6 +255,10 @@ declare module "rethinkdb" {
   interface JoinResult {
     left:any;
     right:any;
+  }
+
+  interface MergeResult {
+    [key:string]: Sequence
   }
 
   interface CreateResult {
