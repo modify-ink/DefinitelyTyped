@@ -36,6 +36,7 @@ declare module "express" {
             post(...handler: RequestHandler[]): IRoute;
             put(...handler: RequestHandler[]): IRoute;
             delete(...handler: RequestHandler[]): IRoute;
+            del(...handler: RequestHandler[]): IRoute;
             patch(...handler: RequestHandler[]): IRoute;
             options(...handler: RequestHandler[]): IRoute;
         }
@@ -91,6 +92,7 @@ declare module "express" {
             post: IRouterMatcher<T>;
             put: IRouterMatcher<T>;
             delete: IRouterMatcher<T>;
+            del: IRouterMatcher<T>;
             patch: IRouterMatcher<T>;
             options: IRouterMatcher<T>;
 
