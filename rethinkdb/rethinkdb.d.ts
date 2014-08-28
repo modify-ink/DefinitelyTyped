@@ -65,6 +65,7 @@ declare module "rethinkdb" {
     tableDrop(name:string):Operation<DropResult>;
     tableList():Operation<string[]>;
     table(name:string, options?:GetTableOptions):Table;
+    info():any;
   }
 
   interface TableOptions {
@@ -97,6 +98,7 @@ declare module "rethinkdb" {
     get(key:Expression<string>):Expression<any>;
     getAll(key:any, index?:Index):Sequence; // without index defaults to primary key
     getAll(...keys:any[]):Sequence;
+    info():any;
   }
 
   interface Expression<T> extends Writeable, Operation<T>  {
