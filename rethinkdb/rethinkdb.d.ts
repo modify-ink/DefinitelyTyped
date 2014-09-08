@@ -114,6 +114,7 @@ declare module "rethinkdb" {
     eq(v:any):Expression<boolean>;
     ne(v:any):Expression<boolean>;
     not():Expression<boolean>;
+    typeOf():Expression<any>;
 
     gt(value:T):Expression<boolean>;
     ge(value:T):Expression<boolean>;
@@ -163,6 +164,9 @@ declare module "rethinkdb" {
     seconds():Expression<number>;
     toISO8601():Expression<string>;
     toEpochTime():Expression<number>;
+
+    // Control Structures
+    do(func:Function):any;
   }
 
   interface Sequence extends Expression<any> {
