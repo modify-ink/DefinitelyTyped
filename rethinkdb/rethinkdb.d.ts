@@ -95,14 +95,14 @@ declare module "rethinkdb" {
     insert(obj:any, options?:InsertOptions):Operation<WriteResult>;
 
     get(key:string):Expression<any>; // primary key
-    get(key:Expression<string>):Expression<any>;
+    get(key:Expression<string>):Sequence;
     getAll(key:any, index?:Index):Sequence; // without index defaults to primary key
     getAll(...keys:any[]):Sequence;
     info():any;
   }
 
   interface Expression<T> extends Writeable, Operation<T>  {
-    (prop:string):Expression<any>; 
+    (prop:string):Expression<any>;
     match(str:string):Expression<Object>;
     contains(prop:string):Expression<boolean>;
     contains(prop:ExpressionFunction<boolean>):Expression<boolean>;
@@ -148,6 +148,7 @@ declare module "rethinkdb" {
     // Manipulation
     pluck(...props:any[]):Sequence;
     without(...props:any[]):Sequence;
+    map(transform:ExpressionFunction<any>):Sequence;
 
     inTimezone(zone:string):Expression<Date>;
     timezone():Expression<string>;
@@ -216,14 +217,15 @@ declare module "rethinkdb" {
     // Control Structures
     forEach(query:Operation<WriteResult>):Operation<WriteResult>;
     forEach(f:(doc:Expression<any>)=>Operation<WriteResult>):Operation<WriteResult>;
+    coerceTo(type:string):Sequence;
   }
 
   interface ExpressionFunction<U> {
-    (doc:Expression<any>):Expression<U>; 
+    (doc:Expression<any>):Expression<U>;
   }
 
   interface JoinFunction<U> {
-    (left:Expression<any>, right:Expression<any>):Expression<U>; 
+    (left:Expression<any>, right:Expression<any>):Expression<U>;
   }
 
   interface ReduceFunction<U> {
@@ -243,7 +245,7 @@ declare module "rethinkdb" {
   interface UpdateOptions {
     nonAtomic?: boolean;
     durability?: string; // 'soft'
-    returnVals?: boolean; // false    
+    returnVals?: boolean; // false
   }
 
   interface WriteResult {
@@ -285,7 +287,7 @@ declare module "rethinkdb" {
 
 
   interface Operation<T> {
-   run(conn:Connection, cb:(err:Error, result:T)=>void); 
+   run(conn:Connection, cb:(err:Error, result:T)=>void);
   }
 
   interface Aggregator {}
