@@ -15,6 +15,7 @@ declare module "rethinkdb" {
 
   export function db(name:string):Db;
   export function table(name:string, options?:{useOutdated:boolean}):Table;
+  export function args(seq:Sequence):Expression<string>;
 
   export function asc(property:string):Sort;
   export function desc(property:string):Sort;
@@ -233,7 +234,7 @@ declare module "rethinkdb" {
   }
 
   interface MergeFunction {
-    (doc:Expression<any>):MergeResult
+    (doc:Sequence):MergeResult;
   }
 
   interface InsertOptions {
