@@ -19,7 +19,8 @@ declare module svgjs {
         (selector:string):Doc;
         (domElement:HTMLElement):Doc;
         create(name:string):any;
-        Element:ElementStatic;
+        Element:ElementClass;
+        Parent:ParentClass;
         supported:boolean;
         get(id:string):Element;
         extend(parent:Object, obj:Object):void;
@@ -28,7 +29,7 @@ declare module svgjs {
     export interface Doc extends Element {
         svg(data:string):any;
         pattern(w:number, h:number, add:(e:Element)=>void):Element;
-        
+
         defs():Defs;
 
         clear():void;
@@ -50,7 +51,7 @@ declare module svgjs {
         in(source:FilterSource):Filter;
         sourceAlpha:FilterSource;
         source:FilterSource;
-    } 
+    }
 
     export interface FilterSource {
 
@@ -88,7 +89,7 @@ declare module svgjs {
         y(y:number, anchor?:boolean):Element;
         x(): number;
         y(): number;
-        
+
         center(x:number, y:number, anchor?:boolean):Element;
         cx(x:number, anchor?:boolean):Element;
         cy(y:number, anchor?:boolean):Element;
@@ -101,11 +102,11 @@ declare module svgjs {
         remove():void;
 
         each(iterator:(i?:number, children?:Element[])=>void, deep?:boolean):void;
-        filter(adder:(filter:Filter)=>void):Element;        
+        filter(adder:(filter:Filter)=>void):Element;
 
         transform(t:Transform):Element;
         transform(): Transform;
-        
+
         style(name:string, value:string):Element;
         style(obj:Object):Element;
         style(name:string):string;
@@ -116,8 +117,8 @@ declare module svgjs {
         data(name:string):any;
         data(name:string, value:any):Element;
         remember(name:string, value:any):Element;
-        remember(obj:Object):Element;
         remember(name:string):any;
+        remember(obj:Object):Element;
         forget(...keys:string[]):Element;
 
         fill(fill:{color?:string; opacity?:number}):Element;
@@ -155,6 +156,12 @@ declare module svgjs {
         click(cb:Function):void;
         on(event:string, cb:Function):void;
         off(event:string, cb:Function):void;
+
+        update(f:(add:Element)=>void):Element;
+    }
+
+    export interface Image extends Element {
+        loaded(cb:Function):void;
     }
 
     export interface Mask extends Element {
@@ -170,8 +177,12 @@ declare module svgjs {
         track:Element;
     }
 
-    export interface ElementStatic extends Parent {
+    export interface ElementClass extends Element {
         new(node:any):Element;
+    }
+
+    export interface ParentClass extends Parent {
+        new(node:any):Parent;
     }
 
     export interface Defs extends Element {}
@@ -189,7 +200,7 @@ declare module svgjs {
         move(x:number, y:number, anchor?:boolean):Animation;
         x(x:number, anchor?:boolean):Animation;
         y(y:number, anchor?:boolean):Animation;
-        
+
         center(x:number, y:number, anchor?:boolean):Animation;
         cx(x:number, anchor?:boolean):Animation;
         cy(y:number, anchor?:boolean):Animation;
@@ -199,9 +210,9 @@ declare module svgjs {
         to(value:number):Animation;
         after(cb:()=>void):Animation;
 
-        // TODO style, etc, bbox... 
+        // TODO style, etc, bbox...
     }
-    
+
     export interface Parent {
         put(element:Element, i?:number):Element;
         add(element:Element, i?:number):Element;
@@ -216,7 +227,7 @@ declare module svgjs {
         polygon(data:string):Element;
         polygon(points:number[][]):Element;
         path(data:string):Element;
-        image(url:string, w?:number, h?:number):Element;
+        image(url:string, w?:number, h?:number):Image;
         text(text:string):Element;
         text(adder:(element:Element)=>void):Element;
         use(element:Element):Element;

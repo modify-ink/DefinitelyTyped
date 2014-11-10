@@ -1,4 +1,4 @@
-// Type definitions for Rethinkdb 1.10.0
+// Type definitions for Rethinkdb 1.12
 // Project: http://rethinkdb.com/
 // Definitions by: Sean Hess <https://seanhess.github.io/>
 // Definitions: https://github.com/borisyankov/DefinitelyTyped
@@ -15,6 +15,7 @@ declare module "rethinkdb" {
 
   export function db(name:string):Db;
   export function table(name:string, options?:{useOutdated:boolean}):Table;
+  export function args(seq:Sequence):Expression<string>;
 
   export function asc(property:string):Sort;
   export function desc(property:string):Sort;
@@ -22,11 +23,15 @@ declare module "rethinkdb" {
   export var count:Aggregator;
   export function sum(prop:string):Aggregator;
   export function avg(prop:string):Aggregator;
+  export function and(...b:Expression<boolean>[]):Expression<boolean>;
 
   export function row(name:string):Expression<any>;
   export function expr(stuff:any):Expression<any>;
 
-  export function now():Time;
+  export function now():Expression<Date>;
+  export function time(year:number, month:number, day:number, hour?:number, minute?:number, second?:number, timezone?:string):Expression<Date>;
+  export function epochTime(time:number):Expression<Date>;
+  export function ISO8601(date:string):Expression<Date>;
 
   // Control Structures
   export function branch(test:Expression<boolean>, trueBranch:Expression<any>, falseBranch:Expression<any>):Expression<any>;
@@ -38,7 +43,7 @@ declare module "rethinkdb" {
     each(cb:(err:Error, row:any)=>boolean, done?:()=>void); // returning false stops iteration
     next(cb:(err:Error, row:any) => void);
     toArray(cb:(err:Error, rows:any[]) => void);
-    close();
+    close():void;
   }
 
   interface ConnectionOptions {
@@ -49,7 +54,7 @@ declare module "rethinkdb" {
   }
 
   interface Connection {
-    close();
+    close():void;
     reconnect(cb:(err:Error, conn:Connection)=>void);
     use(dbName:string);
     addListener(event:string, cb:Function);
@@ -61,6 +66,7 @@ declare module "rethinkdb" {
     tableDrop(name:string):Operation<DropResult>;
     tableList():Operation<string[]>;
     table(name:string, options?:GetTableOptions):Table;
+    info():any;
   }
 
   interface TableOptions {
@@ -90,17 +96,91 @@ declare module "rethinkdb" {
     insert(obj:any, options?:InsertOptions):Operation<WriteResult>;
 
     get(key:string):Sequence; // primary key
-    getAll(key:string, index?:Index):Sequence; // without index defaults to primary key
-    getAll(...keys:string[]):Sequence;
+    get(key:Expression<string>):Sequence;
+    getAll(key:any, index?:Index):Sequence; // without index defaults to primary key
+    getAll(...keys:any[]):Sequence;
+    info():any;
   }
 
-  interface Sequence extends Operation<Cursor>, Writeable {
+  interface Expression<T> extends Writeable, Operation<T>  {
+    (prop:string):Expression<any>;
+    match(str:string):Expression<Object>;
+    contains(prop:string):Expression<boolean>;
+    contains(prop:ExpressionFunction<boolean>):Expression<boolean>;
 
+    and(b:boolean):Expression<boolean>;
+    and(b:Expression<boolean>):Expression<boolean>;
+    or(b:boolean):Expression<boolean>;
+    or(b:Expression<boolean>):Expression<boolean>;
+    eq(v:any):Expression<boolean>;
+    ne(v:any):Expression<boolean>;
+    not():Expression<boolean>;
+    typeOf():Expression<any>;
+
+    gt(value:T):Expression<boolean>;
+    ge(value:T):Expression<boolean>;
+    lt(value:T):Expression<boolean>;
+    le(value:T):Expression<boolean>;
+
+    add(n:number):Expression<number>;
+    sub(n:number):Expression<number>;
+    mul(n:number):Expression<number>;
+    div(n:number):Expression<number>;
+    mod(n:number):Expression<number>;
+
+    hasFields(...fields:string[]):Expression<boolean>;
+
+    default(value:T):Expression<T>;
+    keys():Array<string>;
+
+    // if it is an expression for an array
+    append<U>(value:U):Expression<U[]>;
+    prepend<U>(value:U):Expression<U[]>;
+    difference<U>(array:Expression<U[]>):Expression<U[]>;
+    setInsert<U>(value:U):Expression<U[]>;
+    setUnion<U>(array:Expression<U[]>):Expression<U[]>;
+    setIntersection<U>(array:Expression<U[]>):Expression<U[]>;
+    setDifference<U>(array:Expression<U[]>):Expression<U[]>;
+    insertAt<U>(index:number, value:U):Expression<U[]>;
+    spliceAt<U>(index:number, array:Expression<U[]>):Expression<U[]>;
+    deleteAt<U>(index:number, endIndex?:number):Expression<U[]>;
+    changeAt<U>(index:number, value:U):Expression<U[]>;
+
+    // Manipulation
+    pluck(...props:any[]):Sequence;
+    without(...props:any[]):Sequence;
+    map(transform:ExpressionFunction<any>):Sequence;
+
+    inTimezone(zone:string):Expression<Date>;
+    timezone():Expression<string>;
+    during(start:Expression<Date>, end:Expression<Date>, options?:any):Expression<boolean>;
+    date():Expression<Date>;
+    timeOfDay():Expression<number>;
+    year():Expression<number>;
+    month():Expression<number>;
+    day():Expression<number>;
+    dayOfWeek():Expression<number>;
+    dayOfYear():Expression<number>;
+    hours():Expression<number>;
+    minutes():Expression<number>;
+    seconds():Expression<number>;
+    toISO8601():Expression<string>;
+    toEpochTime():Expression<number>;
+
+    // Control Structures
+    do(func:Function):any;
+  }
+
+  interface Sequence extends Expression<any> {
+    (prop:string):Sequence;
     between(lower:any, upper:any, index?:Index):Sequence;
+    merge(rql:MergeFunction):Sequence;
+    merge(query:Expression<Object>):Sequence;
     filter(rql:ExpressionFunction<boolean>):Sequence;
     filter(rql:Expression<boolean>):Sequence;
     filter(obj:{[key:string]:any}):Sequence;
-
+    max(rql:ExpressionFunction<any>):Sequence;
+    max(attr:string):Sequence;
 
     // Join
     // these return left, right
@@ -126,40 +206,47 @@ declare module "rethinkdb" {
     sample(n:number):Sequence;
 
     // Aggregate
-    reduce(r:ReduceFunction<any>, base?:any):Expression<any>;
+    reduce(r:ReduceFunction<any>, base?:any):Sequence;
+    count(value:any):Expression<number>;
+    count(rql:ExpressionFunction<boolean>):Expression<number>;
     count():Expression<number>;
     distinct():Sequence;
-    groupedMapReduce(group:ExpressionFunction<any>, map:ExpressionFunction<any>, reduce:ReduceFunction<any>, base?:any):Sequence;
-    groupBy(...aggregators:Aggregator[]):Expression<Object>; // TODO: reduction object
-    contains(prop:string):Expression<boolean>;
+    group(group:ExpressionFunction<any>):Sequence;
+    ungroup():Sequence;
+    sum(prop:string):Expression<number>;
 
-    // Manipulation
-    pluck(...props:string[]):Sequence;
-    without(...props:string[]):Sequence;
+    // Control Structures
+    forEach(query:Operation<WriteResult>):Operation<WriteResult>;
+    forEach(f:(doc:Expression<any>)=>Operation<WriteResult>):Operation<WriteResult>;
+    coerceTo(type:string):Sequence;
   }
 
   interface ExpressionFunction<U> {
-    (doc:Expression<any>):Expression<U>; 
+    (doc:Expression<any>):Expression<U>;
   }
 
   interface JoinFunction<U> {
-    (left:Expression<any>, right:Expression<any>):Expression<U>; 
+    (left:Expression<any>, right:Expression<any>):Expression<U>;
   }
 
   interface ReduceFunction<U> {
     (acc:Expression<any>, val:Expression<any>):Expression<U>;
   }
 
+  interface MergeFunction {
+    (doc:Sequence):MergeResult;
+  }
+
   interface InsertOptions {
-    upsert: boolean; // true
-    durability: string; // 'soft'
-    return_vals: boolean; // false
+    upsert?: boolean; // true
+    durability?: string; // 'soft'
+    returnVals?: boolean; // false
   }
 
   interface UpdateOptions {
-    non_atomic: boolean;
-    durability: string; // 'soft'
-    return_vals: boolean; // false    
+    nonAtomic?: boolean;
+    durability?: string; // 'soft'
+    returnVals?: boolean; // false
   }
 
   interface WriteResult {
@@ -171,11 +258,17 @@ declare module "rethinkdb" {
     skipped: number;
     first_error: Error;
     generated_keys: string[]; // only for insert
+    new_val: any;
+    old_val: any;
   }
 
   interface JoinResult {
     left:any;
     right:any;
+  }
+
+  interface MergeResult {
+    [key:string]: Sequence
   }
 
   interface CreateResult {
@@ -192,43 +285,14 @@ declare module "rethinkdb" {
     right_bound?: string; // 'open'
   }
 
-  interface Expression<T> extends Writeable, Operation<T> {
-      (prop:string):Expression<any>; 
-      merge(query:Expression<Object>):Expression<Object>;
-      append(prop:string):Expression<Object>;
-      contains(prop:string):Expression<boolean>;
 
-      and(b:boolean):Expression<boolean>;
-      or(b:boolean):Expression<boolean>;
-      eq(v:any):Expression<boolean>;
-      ne(v:any):Expression<boolean>;
-      not():Expression<boolean>;
-
-      gt(value:T):Expression<boolean>;
-      ge(value:T):Expression<boolean>;
-      lt(value:T):Expression<boolean>;
-      le(value:T):Expression<boolean>;
-
-      add(n:number):Expression<number>;
-      sub(n:number):Expression<number>;
-      mul(n:number):Expression<number>;
-      div(n:number):Expression<number>;
-      mod(n:number):Expression<number>;
-
-      hasFields(...fields:string[]):Expression<boolean>;
-
-      default(value:T):Expression<T>;
-  }
 
   interface Operation<T> {
-   run(conn:Connection, cb:(err:Error, result:T)=>void); 
+   run(conn:Connection, cb:(err:Error, result:T)=>void);
   }
 
   interface Aggregator {}
   interface Sort {}
-
-  interface Time {}
-
 
   // http://www.rethinkdb.com/api/#js
   // TODO control structures

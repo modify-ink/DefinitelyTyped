@@ -36,6 +36,7 @@ declare module "express" {
             post(...handler: RequestHandler[]): IRoute;
             put(...handler: RequestHandler[]): IRoute;
             delete(...handler: RequestHandler[]): IRoute;
+            del(...handler: RequestHandler[]): IRoute;
             patch(...handler: RequestHandler[]): IRoute;
             options(...handler: RequestHandler[]): IRoute;
         }
@@ -93,6 +94,7 @@ declare module "express" {
             post: IRouterMatcher<T>;
             put: IRouterMatcher<T>;
             delete: IRouterMatcher<T>;
+            del: IRouterMatcher<T>;
             patch: IRouterMatcher<T>;
             options: IRouterMatcher<T>;
 
@@ -119,6 +121,59 @@ declare module "express" {
         }
 
         interface Errback { (err: Error): void; }
+
+        interface Session {
+            /**
+             * Update reset `.cookie.maxAge` to prevent
+             * the cookie from expiring when the
+             * session is still active.
+             *
+             * @return {Session} for chaining
+             * @api public
+             */
+            touch(): Session;
+
+            /**
+             * Reset `.maxAge` to `.originalMaxAge`.
+             */
+            resetMaxAge(): Session;
+
+            /**
+             * Save the session data with optional callback `fn(err)`.
+             */
+            save(fn: Function): Session;
+
+            /**
+             * Re-loads the session data _without_ altering
+             * the maxAge properties. Invokes the callback `fn(err)`,
+             * after which time if no exception has occurred the
+             * `req.session` property will be a new `Session` object,
+             * although representing the same session.
+             */
+            reload(fn: Function): Session;
+
+            /**
+             * Destroy `this` session.
+             */
+            destroy(fn: Function): Session;
+
+            /**
+             * Regenerate this request's session.
+             */
+            regenerate(fn: Function): Session;
+
+            user: any;
+
+            error: string;
+
+            success: string;
+
+            views: any;
+
+            count: number;
+
+            passport: any;
+        }
 
         interface Request extends http.ServerRequest, Express.Request {
 
