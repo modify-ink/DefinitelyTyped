@@ -76,6 +76,11 @@ declare module "rethinkdb" {
     datacenter?:string;
   }
 
+  interface IndexOptions {
+    multi?:boolean;
+    geo?:boolean;
+  }
+
   interface GetTableOptions {
     useOutdated: boolean;
   }
@@ -88,7 +93,9 @@ declare module "rethinkdb" {
   }
 
   interface Table extends Sequence {
-    indexCreate(name:string, index?:ExpressionFunction<any>):Operation<CreateResult>;
+    indexCreate(name:string, index?:Expression<any>, opts?:IndexOptions):Operation<CreateResult>;
+    indexCreate(name:string, index?:Expression<any>[], opts?:IndexOptions):Operation<CreateResult>;
+    indexCreate(name:string, index?:ExpressionFunction<any>, opts?:IndexOptions):Operation<CreateResult>;
     indexDrop(name:string):Operation<DropResult>;
     indexList():Operation<string[]>;
 
