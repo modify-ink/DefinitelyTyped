@@ -1139,6 +1139,40 @@ declare module "express" {
          * @param options
          */
         function static(root: string, options?: any): RequestHandler;
+
+        /**
+         * Basic Auth:
+         *
+         * Enfore basic authentication by providing a `callback(user, pass)`,
+         * which must return `true` in order to gain access. Alternatively an async
+         * method is provided as well, invoking `callback(user, pass, callback)`. Populates
+         * `req.user`. The final alternative is simply passing username / password
+         * strings.
+         *
+         *  Simple username and password
+         *
+         *     connect(connect.basicAuth('username', 'password'));
+         *
+         *  Callback verification
+         *
+         *     connect()
+         *       .use(connect.basicAuth(function(user, pass){
+         *         return 'tj' == user & 'wahoo' == pass;
+         *       }))
+         *
+         *  Async callback verification, accepting `fn(err, user)`.
+         *
+         *     connect()
+         *       .use(connect.basicAuth(function(user, pass, fn){
+         *         User.authenticate({ user: user, pass: pass }, fn);
+         *       }))
+         *
+         * @param callback or username
+         * @param realm
+         */
+        function basicAuth(callback: Function, realm: string);
+        function basicAuth(callback: string, realm: string);
+        function basicAuth(callback: Function);
     }
 
     export = e;
