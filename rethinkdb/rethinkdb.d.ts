@@ -16,6 +16,7 @@ declare module "rethinkdb" {
   export function db(name:string):Db;
   export function table(name:string, options?:{useOutdated:boolean}):Table;
   export function args(seq:Sequence):Expression<string>;
+  export function args(arr:string[]):Expression<string>;
 
   export function asc(property:string):Sort;
   export function desc(property:string):Sort;
@@ -87,6 +88,7 @@ declare module "rethinkdb" {
 
   interface Writeable {
     update(obj:Object, options?:UpdateOptions):Operation<WriteResult>;
+    update(expr:ExpressionFunction<any>, options?:UpdateOptions):Operation<WriteResult>;
     replace(obj:Object, options?:UpdateOptions):Operation<WriteResult>;
     replace(expr:ExpressionFunction<any>):Operation<WriteResult>;
     delete(options?:UpdateOptions):Operation<WriteResult>;
