@@ -123,6 +123,7 @@ declare module NodeJS {
     export interface ReadWriteStream extends ReadableStream, WritableStream {}
 
     export interface Process extends EventEmitter {
+        maxTickDepth: number;
         stdout: WritableStream;
         stderr: WritableStream;
         stdin: ReadableStream;
@@ -722,7 +723,7 @@ declare module "net" {
         address(): { port: number; family: string; address: string; };
         unref(): void;
 		ref(): void;
-		
+
         remoteAddress: string;
         remotePort: number;
         bytesRead: number;
@@ -770,13 +771,13 @@ declare module "dgram" {
         port: number;
         size: number;
     }
-    
+
     interface AddressInfo {
-        address: string; 
-        family: string; 
-        port: number; 
+        address: string;
+        family: string;
+        port: number;
     }
-    
+
     export function createSocket(type: string, callback?: (msg: Buffer, rinfo: RemoteInfo) => void): Socket;
 
     interface Socket extends events.EventEmitter {
