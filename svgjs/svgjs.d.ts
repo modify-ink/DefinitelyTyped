@@ -152,6 +152,12 @@ declare module svgjs {
         before(element:Element):Element;
         after(element:Element):Element;
 
+        addClass(className:string):Element;
+        classes():string[];
+        hasClass(className:string):boolean;
+        removeClass(className:string):Element;
+        toggleClass(className:string):Element;
+
 
         click(cb:Function):void;
         on(event:string, cb:Function):void;
