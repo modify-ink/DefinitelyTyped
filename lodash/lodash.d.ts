@@ -2053,12 +2053,18 @@ declare module _ {
             keys: List<string>,
             values: List<any>): TResult;
 
+        zipObject<TResult extends {}>(
+            arrays: any[][]): TResult;
+
         /**
         * @see _.object
         **/
         object<TResult extends {}>(
             keys: List<string>,
             values: List<any>): TResult;
+
+        object<TResult extends {}>(
+            arrays: any[][]): TResult;
     }
 
     /* *************
