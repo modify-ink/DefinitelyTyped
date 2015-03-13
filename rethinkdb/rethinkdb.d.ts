@@ -25,6 +25,8 @@ declare module "rethinkdb" {
   export function sum(prop:string):Aggregator;
   export function avg(prop:string):Aggregator;
   export function and(...b:Expression<boolean>[]):Expression<boolean>;
+  export function not(exp:Expression<boolean>):Expression<boolean>;
+  export function not(bool:boolean):Expression<boolean>;
 
   export function row(name:string):Expression<any>;
   export function expr(stuff:any):Expression<any>;
