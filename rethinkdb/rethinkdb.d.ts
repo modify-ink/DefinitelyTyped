@@ -223,6 +223,7 @@ declare module "rethinkdb" {
     count():Expression<number>;
     distinct():Sequence;
     group(group:ExpressionFunction<any>):Sequence;
+    group(str:string):Sequence;
     ungroup():Sequence;
     sum(prop:string):Expression<number>;
 
