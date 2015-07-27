@@ -192,6 +192,7 @@ declare module "rethinkdb" {
     filter(obj:{[key:string]:any}):Sequence;
     max(rql:ExpressionFunction<any>):Sequence;
     max(attr:string):Sequence;
+    getField(attr:string):Sequence;
 
     // Join
     // these return left, right
