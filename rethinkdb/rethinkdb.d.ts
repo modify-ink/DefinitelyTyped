@@ -15,8 +15,8 @@ declare module "rethinkdb" {
 
   export function db(name:string):Db;
   export function table(name:string, options?:{useOutdated:boolean}):Table;
-  export function args(seq:Sequence):Expression<string>;
-  export function args(arr:string[]):Expression<string>;
+  export function args(array:any[]):Expression<any>;
+  export function args(seq:Sequence):Expression<any>;
 
   export function asc(property:string):Sort;
   export function desc(property:string):Sort;
@@ -142,7 +142,7 @@ declare module "rethinkdb" {
     hasFields(...fields:string[]):Expression<boolean>;
 
     default(value:T):Expression<T>;
-    keys():Array<string>;
+    keys():Expression<string[]>;
 
     // if it is an expression for an array
     append<U>(value:U):Expression<U[]>;
