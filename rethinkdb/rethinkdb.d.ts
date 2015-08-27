@@ -33,6 +33,7 @@ declare module "rethinkdb" {
 
   export function now():Expression<Date>;
   export function time(year:number, month:number, day:number, hour?:number, minute?:number, second?:number, timezone?:string):Expression<Date>;
+  export function time(year:number, month:number, day:number, timezone:string):Expression<Date>;
   export function epochTime(time:number):Expression<Date>;
   export function ISO8601(date:string):Expression<Date>;
 
