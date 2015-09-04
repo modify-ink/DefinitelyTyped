@@ -138,6 +138,7 @@ declare module svgjs {
 
         clipWith(element:Element):Element;
         clipper:Element;
+        clip():Element;
         unclip():Element;
 
         front():Element;
