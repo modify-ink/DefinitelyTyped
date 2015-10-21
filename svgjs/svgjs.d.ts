@@ -35,6 +35,7 @@ declare module svgjs {
         clear():void;
 
         mask():Mask;
+        select(selector:string):Element;
 
         // TODO gradients
     }
