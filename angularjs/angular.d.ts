@@ -47,7 +47,7 @@ declare module ng {
          *     Each item in the array should be the name of a predefined module or a (DI annotated)
          *     function that will be invoked by the injector as a run block.
          */
-        bootstrap(element: string, modules?: string): auto.IInjectorService;
+        bootstrap(element: string, modules?: string, config?:any): auto.IInjectorService;
         /**
          * Use this function to manually start up angular application.
          *
@@ -56,7 +56,7 @@ declare module ng {
          *     Each item in the array should be the name of a predefined module or a (DI annotated)
          *     function that will be invoked by the injector as a run block.
          */
-        bootstrap(element: string, modules?: Function): auto.IInjectorService;
+        bootstrap(element: string, modules?: Function, config?:any): auto.IInjectorService;
         /**
          * Use this function to manually start up angular application.
          *
@@ -65,7 +65,7 @@ declare module ng {
          *     Each item in the array should be the name of a predefined module or a (DI annotated)
          *     function that will be invoked by the injector as a run block.
          */
-        bootstrap(element: string, modules?: string[]): auto.IInjectorService;
+        bootstrap(element: string, modules?: string[], config?:any): auto.IInjectorService;
         /**
          * Use this function to manually start up angular application.
          *
@@ -74,7 +74,7 @@ declare module ng {
          *     Each item in the array should be the name of a predefined module or a (DI annotated)
          *     function that will be invoked by the injector as a run block.
          */
-        bootstrap(element: JQuery, modules?: string): auto.IInjectorService;
+        bootstrap(element: JQuery, modules?: string, config?:any): auto.IInjectorService;
         /**
          * Use this function to manually start up angular application.
          *
@@ -83,7 +83,7 @@ declare module ng {
          *     Each item in the array should be the name of a predefined module or a (DI annotated)
          *     function that will be invoked by the injector as a run block.
          */
-        bootstrap(element: JQuery, modules?: Function): auto.IInjectorService;
+        bootstrap(element: JQuery, modules?: Function, config?:any): auto.IInjectorService;
         /**
          * Use this function to manually start up angular application.
          *
@@ -92,7 +92,7 @@ declare module ng {
          *     Each item in the array should be the name of a predefined module or a (DI annotated)
          *     function that will be invoked by the injector as a run block.
          */
-        bootstrap(element: JQuery, modules?: string[]): auto.IInjectorService;
+        bootstrap(element: JQuery, modules?: string[], config?:any): auto.IInjectorService;
         /**
          * Use this function to manually start up angular application.
          *
@@ -101,7 +101,7 @@ declare module ng {
          *     Each item in the array should be the name of a predefined module or a (DI annotated)
          *     function that will be invoked by the injector as a run block.
          */
-        bootstrap(element: Element, modules?: string): auto.IInjectorService;
+        bootstrap(element: Element, modules?: string, config?:any): auto.IInjectorService;
         /**
          * Use this function to manually start up angular application.
          *
@@ -110,7 +110,7 @@ declare module ng {
          *     Each item in the array should be the name of a predefined module or a (DI annotated)
          *     function that will be invoked by the injector as a run block.
          */
-        bootstrap(element: Element, modules?: Function): auto.IInjectorService;
+        bootstrap(element: Element, modules?: Function, config?:any): auto.IInjectorService;
         /**
          * Use this function to manually start up angular application.
          *
@@ -119,7 +119,7 @@ declare module ng {
          *     Each item in the array should be the name of a predefined module or a (DI annotated)
          *     function that will be invoked by the injector as a run block.
          */
-        bootstrap(element: Element, modules?: string[]): auto.IInjectorService;
+        bootstrap(element: Element, modules?: string[], config?:any): auto.IInjectorService;
         /**
          * Use this function to manually start up angular application.
          *
@@ -128,7 +128,7 @@ declare module ng {
          *     Each item in the array should be the name of a predefined module or a (DI annotated)
          *     function that will be invoked by the injector as a run block.
          */
-        bootstrap(element: Document, modules?: string): auto.IInjectorService;
+        bootstrap(element: Document, modules?: string, config?:any): auto.IInjectorService;
         /**
          * Use this function to manually start up angular application.
          *
@@ -137,7 +137,7 @@ declare module ng {
          *     Each item in the array should be the name of a predefined module or a (DI annotated)
          *     function that will be invoked by the injector as a run block.
          */
-        bootstrap(element: Document, modules?: Function): auto.IInjectorService;
+        bootstrap(element: Document, modules?: Function, config?:any): auto.IInjectorService;
         /**
          * Use this function to manually start up angular application.
          *
@@ -146,7 +146,7 @@ declare module ng {
          *     Each item in the array should be the name of a predefined module or a (DI annotated)
          *     function that will be invoked by the injector as a run block.
          */
-        bootstrap(element: Document, modules?: string[]): auto.IInjectorService;
+        bootstrap(element: Document, modules?: string[], config?:any): auto.IInjectorService;
 
         /**
          * Creates a deep copy of source, which should be an object or an array.
@@ -482,7 +482,7 @@ declare module ng {
         $apply(): any;
         $apply(exp: string): any;
         $apply(exp: (scope: IScope) => any): any;
-        
+
         $applyAsync(exp: string): any;
         $applyAsync(exp: (scope: IScope) => any): any;
 
